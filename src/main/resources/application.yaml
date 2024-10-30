@@ -1,0 +1,48 @@
+server:
+  port: 9000
+
+#spring datasource
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/warehouse
+    username: yasir
+    password: yasir
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 60000
+      idle-timeout: 60000
+      max-lifetime: 1800000
+      minimum-pool-size: 5
+      maximum-pool-size: 10
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: update
+    properties:
+      jdbc:
+        batch_size: 100
+    show-sql: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: development
+server:
+  port: 9090
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+server:
+  port: 9091
+
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+server:
+  port: 9092
