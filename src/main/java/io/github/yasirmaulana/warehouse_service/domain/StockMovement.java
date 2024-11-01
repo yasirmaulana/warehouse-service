@@ -21,7 +21,7 @@ public class StockMovement {
     private Integer quantity;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_id", nullable = false)
@@ -33,7 +33,7 @@ public class StockMovement {
 
     @PrePersist
     protected  void  onCreate() {
-        this.createAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
 }

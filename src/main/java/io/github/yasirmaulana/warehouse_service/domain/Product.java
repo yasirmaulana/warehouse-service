@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "products")
-public class Product {
+public class Product extends AbstractBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,22 +27,22 @@ public class Product {
     private String category;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WarehouseStock> stocks;
 
     @PrePersist
     protected void onCreate() {
-        this.createAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updateAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
 }
