@@ -3,6 +3,8 @@ server:
 
 #spring datasource
 spring:
+  application:
+    name: warehouse-service
   datasource:
     url: jdbc:postgresql://localhost:5432/warehouse
     username: yasir
