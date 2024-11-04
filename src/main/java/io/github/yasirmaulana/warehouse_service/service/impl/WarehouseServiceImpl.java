@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,13 +33,17 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public void createWarehouse(WarehouseCreateRequestDTO dto) {
-        Warehouse warehouse = new Warehouse();
-        warehouse.setName(dto.getName());
-        warehouse.setLocation(dto.getLocation());
-        warehouse.setCapacity(dto.getCapacity());
+    public void createWarehouse(List<WarehouseCreateRequestDTO> dtos) {
+        List<Warehouse> warehouses = dtos.stream().map(p -> {
+            Warehouse warehouse = new Warehouse();
+            warehouse.setName(p.getName());
+            warehouse.setLocation(p.getLocation());
+            warehouse.setCapacity(p.getCapacity());
 
-        warehouseRepository.save(warehouse);
+            return  warehouse;
+        }).toList();
+
+        warehouseRepository.saveAll(warehouses);
     }
 
     @Override
@@ -82,15 +87,15 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
+    public Optional<Warehouse> getWarehouseBySecureId(String warehouseId) {
+        return warehouseRepository.findBySecureId(warehouseId);
+    }
+
+
+    @Override
     public List<Warehouse> getAllWarehouses() {
         return null;
     }
-
-    @Override
-    public Optional<Warehouse> getWarehouseById(Long id) {
-        return Optional.empty();
-    }
-
 
     @Override
     public List<Warehouse> getWarehousesWithLowStock(int minQuantity) {

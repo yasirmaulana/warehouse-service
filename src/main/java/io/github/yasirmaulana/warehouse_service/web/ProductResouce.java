@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -19,8 +20,8 @@ public class ProductResouce {
     private final ProductService productService;
 
     @PostMapping("/v1/product")
-    public ResponseEntity<Void> createNewProduct(@RequestBody @Valid ProductCreateRequestDTO dto) {
-        productService.createProduct(dto);
+    public ResponseEntity<Void> createNewProduct(@RequestBody @Valid List<ProductCreateRequestDTO> dtos) {
+        productService.createProduct(dtos);
         return ResponseEntity.created(URI.create("/v1/product")).build();
     }
 

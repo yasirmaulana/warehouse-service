@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,14 +32,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void createProduct(ProductCreateRequestDTO dto) {
-        Product product = new Product();
-        product.setName(dto.getName());
-        product.setSku(dto.getSku());
-        product.setDescription(dto.getDescription());
-        product.setCategory(dto.getCategory());
+    public void createProduct(List<ProductCreateRequestDTO> dtos) {
+        List<Product> products = dtos.stream().map(p -> {
+            Product product = new Product();
+            product.setName(p.getName());
+            product.setSku(p.getSku());
+            product.setDescription(p.getDescription());
+            product.setCategory(p.getCategory());
 
-        productRepository.save(product);
+            return product;
+        }).toList();
+
+        productRepository.saveAll(products);
 
     }
 
@@ -52,6 +57,11 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(dto.getCategory());
 
         productRepository.save(product);
+    }
+
+    @Override
+    public void deleteProduct(String productId) {
+
     }
 
     @Override
@@ -71,6 +81,16 @@ public class ProductServiceImpl implements ProductService {
             return dto;
         }).toList();
         return PaginationUtil.createResultPageDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
+    }
+
+    @Override
+    public Optional<Product> getProductBySecureId(String productId) {
+        return productRepository.findBySecureId(productId);
+    }
+
+    @Override
+    public List<Product> getOutOfStockProducts() {
+        return null;
     }
 
 

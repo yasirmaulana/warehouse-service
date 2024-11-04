@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -19,8 +20,8 @@ public class WarehouseResource {
     private final WarehouseService warehouseService;
 
     @PostMapping("/v1/warehouse")
-    public ResponseEntity<Void> createNewWarehouse(@RequestBody @Valid WarehouseCreateRequestDTO dto) {
-        warehouseService.createWarehouse(dto);
+    public ResponseEntity<Void> createNewWarehouse(@RequestBody @Valid List<WarehouseCreateRequestDTO> dtos) {
+        warehouseService.createWarehouse(dtos);
         return ResponseEntity.created(URI.create("/v1/warehouse")).build();
     }
 

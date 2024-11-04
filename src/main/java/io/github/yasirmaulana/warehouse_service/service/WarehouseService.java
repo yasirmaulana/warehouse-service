@@ -11,13 +11,13 @@ import java.util.Optional;
 
 public interface WarehouseService {
 
-    void createWarehouse(WarehouseCreateRequestDTO dto);
+    void createWarehouse(List<WarehouseCreateRequestDTO> dtos);
     void updateWarehouse(String warehouseId, WarehouseUpdateRequestDTO dto);
     void deleteWarehouse(String warehouseId);
 
     ResultPageResponseDTO<WarehouseListResponseDTO> getWarehouseList(Integer pages, Integer limit, String sortBy, String direction, String warehouseName);
 
-    Optional<Warehouse> getWarehouseById(Long id);
+    Optional<Warehouse> getWarehouseBySecureId(String warehouseId);
 
     List<Warehouse> getAllWarehouses();
 
