@@ -4,6 +4,7 @@ import io.github.yasirmaulana.warehouse_service.domain.Product;
 import io.github.yasirmaulana.warehouse_service.domain.Warehouse;
 import io.github.yasirmaulana.warehouse_service.domain.WarehouseStock;
 import io.github.yasirmaulana.warehouse_service.dto.StockCreateRequestDTO;
+import io.github.yasirmaulana.warehouse_service.extention.NotFoundException;
 import io.github.yasirmaulana.warehouse_service.repository.WarehouseStockRepository;
 import io.github.yasirmaulana.warehouse_service.service.ProductService;
 import io.github.yasirmaulana.warehouse_service.service.WarehouseService;
@@ -31,7 +32,7 @@ public class WarehouseStockServiceImpl implements WarehouseStockService {
     @Override
     public void createStock(StockCreateRequestDTO dto) {
         Warehouse warehouse = warehouseService.getWarehouseBySecureId(dto.getWarehouseId())
-                .orElseThrow(() -> new RuntimeException("invalid.warehouse.id"));
+                .orElseThrow(() -> new NotFoundException("invalid.warehouse.id"));
 
         Product product = productService.getProductBySecureId(dto.getProductId())
                 .orElseThrow(() -> new RuntimeException("invalid.product.id"));

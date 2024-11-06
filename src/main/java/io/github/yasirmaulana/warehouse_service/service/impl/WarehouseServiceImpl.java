@@ -5,6 +5,7 @@ import io.github.yasirmaulana.warehouse_service.dto.ResultPageResponseDTO;
 import io.github.yasirmaulana.warehouse_service.dto.WarehouseCreateRequestDTO;
 import io.github.yasirmaulana.warehouse_service.dto.WarehouseListResponseDTO;
 import io.github.yasirmaulana.warehouse_service.dto.WarehouseUpdateRequestDTO;
+import io.github.yasirmaulana.warehouse_service.extention.NotFoundException;
 import io.github.yasirmaulana.warehouse_service.repository.WarehouseRepository;
 import io.github.yasirmaulana.warehouse_service.service.WarehouseService;
 import io.github.yasirmaulana.warehouse_service.util.PaginationUtil;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +49,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public void updateWarehouse(String warehouseId, WarehouseUpdateRequestDTO dto) {
         Warehouse warehouse = warehouseRepository.findBySecureId(warehouseId)
-                .orElseThrow(() -> new RuntimeException("invalid.warehouse.id"));
+                .orElseThrow(() -> new NotFoundException("invalid.warehouse.id"));
 
         warehouse.setName(dto.getName()==null|| dto.getName().isBlank()?warehouse.getName(): dto.getName());
         warehouse.setLocation(dto.getLocation()==null|| dto.getLocation().isBlank()?warehouse.getLocation(): dto.getLocation());
@@ -61,7 +61,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public void deleteWarehouse(String warehouseId) {
         Warehouse warehouse = warehouseRepository.findBySecureId(warehouseId)
-                .orElseThrow(() -> new RuntimeException("invalid.warehouse.id"));
+                .orElseThrow(() -> new NotFoundException("invalid.warehouse.id"));
         warehouse.setDeleted(true);
 
         warehouseRepository.save(warehouse);

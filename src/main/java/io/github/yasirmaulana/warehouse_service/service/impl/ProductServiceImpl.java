@@ -5,6 +5,7 @@ import io.github.yasirmaulana.warehouse_service.dto.ProductCreateRequestDTO;
 import io.github.yasirmaulana.warehouse_service.dto.ProductListResponseDTO;
 import io.github.yasirmaulana.warehouse_service.dto.ProductUpdateRequestDTO;
 import io.github.yasirmaulana.warehouse_service.dto.ResultPageResponseDTO;
+import io.github.yasirmaulana.warehouse_service.extention.NotFoundException;
 import io.github.yasirmaulana.warehouse_service.repository.ProductRepository;
 import io.github.yasirmaulana.warehouse_service.service.ProductService;
 import io.github.yasirmaulana.warehouse_service.util.PaginationUtil;
@@ -50,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateProduct(String productId, ProductUpdateRequestDTO dto) {
         Product product = productRepository.findBySecureId(productId)
-                .orElseThrow(() -> new RuntimeException("invalid.product.id"));
+                .orElseThrow(() -> new NotFoundException("invalid.product.id"));
         product.setName(dto.getName()==null|| dto.getName().isBlank()?product.getName(): dto.getName());
         product.setSku(dto.getSku()==null|| dto.getSku().isBlank()?product.getSku(): dto.getSku());
         product.setDescription(dto.getDescription());

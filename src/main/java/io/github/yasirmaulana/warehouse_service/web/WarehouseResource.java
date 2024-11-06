@@ -15,23 +15,24 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
+@RequestMapping("/v1/warehouse")
 public class WarehouseResource {
 
     private final WarehouseService warehouseService;
 
-    @PostMapping("/v1/warehouse")
+    @PostMapping
     public ResponseEntity<Void> createNewWarehouse(@RequestBody @Valid List<WarehouseCreateRequestDTO> dtos) {
         warehouseService.createWarehouse(dtos);
         return ResponseEntity.created(URI.create("/v1/warehouse")).build();
     }
 
-    @PutMapping("/v1/warehouse/{warehouseId}")
+    @PutMapping("/{warehouseId}")
     public ResponseEntity<Void> updateWarehouse(@PathVariable String warehouseId, @RequestBody @Valid WarehouseUpdateRequestDTO dto) {
         warehouseService.updateWarehouse(warehouseId, dto);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/v1/warehouse")
+    @GetMapping
     public ResponseEntity<ResultPageResponseDTO<WarehouseListResponseDTO>> findWarehouseList(
             @RequestParam(name = "page", required = true, defaultValue = "0") Integer pages,
             @RequestParam(name = "limit", required = true, defaultValue = "10") Integer limit,

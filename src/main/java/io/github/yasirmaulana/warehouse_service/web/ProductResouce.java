@@ -15,24 +15,25 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/v1/product")
 public class ProductResouce {
 
     private final ProductService productService;
 
-    @PostMapping("/v1/product")
+    @PostMapping
     public ResponseEntity<Void> createNewProduct(@RequestBody @Valid List<ProductCreateRequestDTO> dtos) {
         productService.createProduct(dtos);
         return ResponseEntity.created(URI.create("/v1/product")).build();
     }
 
-    @PutMapping("/v1/product/{productId}")
+    @PutMapping("/{productId}")
     public ResponseEntity<Void> updateProduct(@PathVariable String productId,
                                               @RequestBody @Valid ProductUpdateRequestDTO dto) {
         productService.updateProduct(productId, dto);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/v1/product")
+    @GetMapping
     public ResponseEntity<ResultPageResponseDTO<ProductListResponseDTO>> findProductList(
             @RequestParam(name = "page", required = true, defaultValue = "0") Integer pages,
             @RequestParam(name = "limit", required = true, defaultValue = "10") Integer limit,
