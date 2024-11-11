@@ -9,11 +9,12 @@ import java.io.Serializable;
 
 @Data
 @JsonNaming(PropertyNamingStrategy.class)
-public class ProductListResponseDTO implements Serializable {
+public class ProductResponseDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID= 3758190957697444423L;
 
+    private Long id;
     private String productId;
     private String name;
     private String sku;

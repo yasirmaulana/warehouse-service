@@ -8,10 +8,11 @@ import java.io.Serializable;
 
 @Data
 @JsonNaming(PropertyNamingStrategy.class)
-public class WarehouseListResponseDTO implements Serializable {
+public class WarehouseResponseDTO implements Serializable {
 
     private static final long serialVersionUID = -6864571636339221707L;
 
+    private Long id;
     private String warehouseId;
     private String name;
     private String location;

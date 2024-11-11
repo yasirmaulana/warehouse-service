@@ -2,7 +2,7 @@ package io.github.yasirmaulana.warehouse_service.web;
 
 import io.github.yasirmaulana.warehouse_service.dto.ResultPageResponseDTO;
 import io.github.yasirmaulana.warehouse_service.dto.WarehouseCreateRequestDTO;
-import io.github.yasirmaulana.warehouse_service.dto.WarehouseListResponseDTO;
+import io.github.yasirmaulana.warehouse_service.dto.WarehouseResponseDTO;
 import io.github.yasirmaulana.warehouse_service.dto.WarehouseUpdateRequestDTO;
 import io.github.yasirmaulana.warehouse_service.service.WarehouseService;
 import jakarta.validation.Valid;
@@ -21,7 +21,7 @@ public class WarehouseResource {
     private final WarehouseService warehouseService;
 
     @PostMapping
-    public ResponseEntity<Void> createNewWarehouse(@RequestBody @Valid List<WarehouseCreateRequestDTO> dtos) {
+    public ResponseEntity<Void> createWarehouse(@RequestBody @Valid List<WarehouseCreateRequestDTO> dtos) {
         warehouseService.createWarehouse(dtos);
         return ResponseEntity.created(URI.create("/v1/warehouse")).build();
     }
@@ -32,8 +32,14 @@ public class WarehouseResource {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/{warehouseId}")
+    public ResponseEntity<Void> deleteWarehouse(@PathVariable String warehouseId) {
+        warehouseService.deleteWarehouse(warehouseId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping
-    public ResponseEntity<ResultPageResponseDTO<WarehouseListResponseDTO>> findWarehouseList(
+    public ResponseEntity<ResultPageResponseDTO<WarehouseResponseDTO>> findWarehouseList(
             @RequestParam(name = "page", required = true, defaultValue = "0") Integer pages,
             @RequestParam(name = "limit", required = true, defaultValue = "10") Integer limit,
             @RequestParam(name = "sortBy", required = true, defaultValue = "name") String sortBy,

@@ -22,9 +22,6 @@ public class WarehouseStock implements Serializable {
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_id", nullable = false)
     private Warehouse warehouse;
@@ -32,6 +29,9 @@ public class WarehouseStock implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @PreUpdate
     protected void onUpdate() {

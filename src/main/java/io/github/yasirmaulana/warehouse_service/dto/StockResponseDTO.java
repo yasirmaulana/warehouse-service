@@ -4,25 +4,15 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.github.yasirmaulana.warehouse_service.domain.Product;
 import io.github.yasirmaulana.warehouse_service.domain.Warehouse;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 @Data
+@AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.class)
-public class StockCreateRequestDTO implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 4028213924401042038L;
-
-    @NotNull
+public class StockResponseDTO {
+    private String stockId;
     private Integer quantity;
-    @NotNull
     private Warehouse warehouse;
-    @NotNull
     private Product product;
-
 }

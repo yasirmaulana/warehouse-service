@@ -17,10 +17,8 @@ public class WarehouseCreateRequestDTO implements Serializable {
 
     @NotBlank
     private String name;
-
     @NotBlank
     private String location;
-
     private Integer capacity;
 
 

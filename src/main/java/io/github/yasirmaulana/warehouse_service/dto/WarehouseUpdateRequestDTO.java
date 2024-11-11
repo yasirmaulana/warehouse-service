@@ -15,9 +15,7 @@ public class WarehouseUpdateRequestDTO implements Serializable {
     private static final long serialVersionUID = -4065652690482009985L;
 
     private String name;
-
     private String location;
-
-    Integer capacity;
+    private Integer capacity;
 
 }

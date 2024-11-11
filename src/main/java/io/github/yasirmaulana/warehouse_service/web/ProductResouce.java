@@ -1,7 +1,7 @@
 package io.github.yasirmaulana.warehouse_service.web;
 
 import io.github.yasirmaulana.warehouse_service.dto.ProductCreateRequestDTO;
-import io.github.yasirmaulana.warehouse_service.dto.ProductListResponseDTO;
+import io.github.yasirmaulana.warehouse_service.dto.ProductResponseDTO;
 import io.github.yasirmaulana.warehouse_service.dto.ProductUpdateRequestDTO;
 import io.github.yasirmaulana.warehouse_service.dto.ResultPageResponseDTO;
 import io.github.yasirmaulana.warehouse_service.service.ProductService;
@@ -34,7 +34,7 @@ public class ProductResouce {
     }
 
     @GetMapping
-    public ResponseEntity<ResultPageResponseDTO<ProductListResponseDTO>> findProductList(
+    public ResponseEntity<ResultPageResponseDTO<ProductResponseDTO>> findProductList(
             @RequestParam(name = "page", required = true, defaultValue = "0") Integer pages,
             @RequestParam(name = "limit", required = true, defaultValue = "10") Integer limit,
             @RequestParam(name = "sortBy", required = true, defaultValue = "name") String sortBy,

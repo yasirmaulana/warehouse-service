@@ -9,59 +9,51 @@ import io.github.yasirmaulana.warehouse_service.repository.WarehouseStockReposit
 import io.github.yasirmaulana.warehouse_service.service.ProductService;
 import io.github.yasirmaulana.warehouse_service.service.WarehouseService;
 import io.github.yasirmaulana.warehouse_service.service.WarehouseStockService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
+@AllArgsConstructor
 public class WarehouseStockServiceImpl implements WarehouseStockService {
 
     private final ProductService productService;
     private final WarehouseService warehouseService;
     private final WarehouseStockRepository warehouseStockRepository;
 
-    @Autowired
-    public WarehouseStockServiceImpl(ProductService productService, WarehouseService warehouseService,
-                                     WarehouseStockRepository warehouseStockRepository) {
-        this.productService = productService;
-        this.warehouseService = warehouseService;
-        this.warehouseStockRepository = warehouseStockRepository;
+    @Override
+    public void createStock(List<StockCreateRequestDTO> dtos) {
+        Map<String, Product> productsById = productService.getAllProductsAsMap();
+        Map<String, Warehouse> warehousesById = warehouseService.getAllWarehousesAsMap();
+
+        List<WarehouseStock> warehouseStocks = dtos.stream().map(dto -> {
+            WarehouseStock stock = new WarehouseStock();
+            stock.setQuantity(dto.getQuantity());
+
+            Product product = productsById.get(dto.getProduct().getSecureId());
+            stock.setProduct(product);
+
+            Warehouse warehouse = warehousesById.get(dto.getWarehouse().getSecureId());
+            stock.setWarehouse(warehouse);
+
+            return stock;
+        }).toList();
+
+        warehouseStockRepository.saveAll(warehouseStocks);
     }
 
     @Override
-    public void createStock(StockCreateRequestDTO dto) {
-        Warehouse warehouse = warehouseService.getWarehouseBySecureId(dto.getWarehouseId())
-                .orElseThrow(() -> new NotFoundException("invalid.warehouse.id"));
-
-        Product product = productService.getProductBySecureId(dto.getProductId())
-                .orElseThrow(() -> new RuntimeException("invalid.product.id"));
+    public void updateStock(StockCreateRequestDTO dto) {
+        WarehouseStock warehouseStock = warehouseStockRepository.findByWarehouseIdAndProductId(dto.getWarehouse().getId() , dto.getProduct().getId())
+                .orElseThrow(() -> new NotFoundException("invalid.warehouse.id.or.product.id"));
 
         WarehouseStock stock = new WarehouseStock();
-        stock.setQuantity(dto.getQuantity());
-        stock.setWarehouse(warehouse);
-        stock.setProduct(product);
+        stock.setQuantity(warehouseStock.getQuantity());
 
         warehouseStockRepository.save(stock);
     }
 
-    @Override
-    public List<WarehouseStock> getStocksByWarehouseId(Long warehouseId) {
-        return null;
-    }
 
-    @Override
-    public WarehouseStock updateStockQuantity(Long warehouseId, Long productId, int quantity) {
-        return null;
-    }
-
-    @Override
-    public boolean isProductInWarehouse(Long warehouseId, Long productId) {
-        return false;
-    }
-
-    @Override
-    public void deleteStock(Long stockId) {
-
-    }
 }
