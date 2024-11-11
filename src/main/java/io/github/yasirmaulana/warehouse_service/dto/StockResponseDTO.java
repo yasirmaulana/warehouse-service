@@ -7,10 +7,16 @@ import io.github.yasirmaulana.warehouse_service.domain.Warehouse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.class)
-public class StockResponseDTO {
+public class StockResponseDTO implements Serializable {
+    @Serial
+    private static final long serialVersionUID= 7842546043718221887L;
+
     private String stockId;
     private Integer quantity;
     private Warehouse warehouse;

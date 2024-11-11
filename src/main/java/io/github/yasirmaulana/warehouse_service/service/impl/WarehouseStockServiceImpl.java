@@ -55,5 +55,9 @@ public class WarehouseStockServiceImpl implements WarehouseStockService {
         warehouseStockRepository.save(stock);
     }
 
+    @Override
+    public void deleteStock(String stockId) {
+    }
+
 
 }

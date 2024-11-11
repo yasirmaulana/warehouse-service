@@ -33,6 +33,12 @@ public class ProductResouce {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/{productId}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable String productId) {
+        productService.deleteProduct(productId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping
     public ResponseEntity<ResultPageResponseDTO<ProductResponseDTO>> findProductList(
             @RequestParam(name = "page", required = true, defaultValue = "0") Integer pages,

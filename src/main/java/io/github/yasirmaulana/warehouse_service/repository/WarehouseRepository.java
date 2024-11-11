@@ -11,5 +11,4 @@ import java.util.Optional;
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
     Optional<Warehouse> findBySecureId(String secureId);
     Page<Warehouse> findByNameLikeIgnoreCase(String warehousename, Pageable pageable);
-    List<Warehouse> findByDeletedFalse();
 }

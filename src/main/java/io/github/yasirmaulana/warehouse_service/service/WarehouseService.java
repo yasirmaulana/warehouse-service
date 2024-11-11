@@ -16,8 +16,6 @@ public interface WarehouseService {
     void deleteWarehouse(String warehouseId);
     ResultPageResponseDTO<WarehouseResponseDTO> getWarehouseList(Integer pages, Integer limit, String sortBy,
                                                                  String direction, String warehouseName);
-    List<WarehouseResponseDTO> getAllWarehouse();
     Map<String, Warehouse> getAllWarehousesAsMap();
-    Optional<Warehouse> getWarehouseBySecureId(String warehouseId);
 
 }

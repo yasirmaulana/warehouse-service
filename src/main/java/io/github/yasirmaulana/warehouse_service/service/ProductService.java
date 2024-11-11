@@ -10,9 +10,8 @@ import java.util.Optional;
 public interface ProductService {
     void createProduct(List<ProductCreateRequestDTO> dtos);
     void updateProduct(String productId, ProductUpdateRequestDTO dto);
+    void deleteProduct(String productId);
     ResultPageResponseDTO<ProductResponseDTO> getProductLIst(Integer pages, Integer limit,
                                                              String sortBy, String direction, String productName);
-    List<ProductResponseDTO> getAllProduct();
     Map<String, Product> getAllProductsAsMap();
-    Optional<Product> getProductBySecureId(String productId);
 }

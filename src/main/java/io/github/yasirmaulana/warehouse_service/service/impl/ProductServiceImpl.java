@@ -58,6 +58,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public void deleteProduct(String productId) {
+        Product product = productRepository.findBySecureId(productId)
+                .orElseThrow(() -> new NotFoundException("invalid.product.id"));
+        product.setDeleted(true);
+
+        productRepository.save(product);
+    }
+
+    @Override
     public ResultPageResponseDTO<ProductResponseDTO> getProductLIst(Integer pages, Integer limit, String sortBy, String direction, String productName) {
         productName = StringUtils.isBlank(productName)?"%":productName+"%";
         Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
@@ -77,29 +86,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponseDTO> getAllProduct() {
-        return productRepository.findByDeletedFalse()
-                .stream().map(p -> {
-                    ProductResponseDTO dto = new ProductResponseDTO();
-                    dto.setProductId(p.getSecureId());
-                    dto.setName(p.getName());
-                    dto.setDescription(p.getDescription());
-                    dto.setSku(p.getSku());
-                    dto.setCategory(p.getCategory());
-                    return dto;
-                }).toList();
-    }
-
-    @Override
     public Map<String, Product> getAllProductsAsMap() {
         List<Product> products = productRepository.findAll();
         return products.stream()
                 .collect(Collectors.toMap(Product::getSecureId, Function.identity()));
-    }
-
-    @Override
-    public Optional<Product> getProductBySecureId(String productId) {
-        return productRepository.findBySecureId(productId);
     }
 
 }

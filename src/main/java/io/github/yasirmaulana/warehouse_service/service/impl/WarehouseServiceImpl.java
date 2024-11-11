@@ -84,28 +84,10 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public List<WarehouseResponseDTO> getAllWarehouse() {
-        return warehouseRepository.findByDeletedFalse()
-                .stream().map(p -> {
-                    WarehouseResponseDTO dto = new WarehouseResponseDTO();
-                    dto.setWarehouseId(p.getSecureId());
-                    dto.setName(p.getName());
-                    dto.setCapacity(p.getCapacity());
-                    dto.setLocation(p.getLocation());
-                    return dto;
-                }).toList();
-    }
-
-    @Override
     public Map<String, Warehouse> getAllWarehousesAsMap() {
         List<Warehouse> warehouses = warehouseRepository.findAll();
         return warehouses.stream()
                 .collect(Collectors.toMap(Warehouse::getSecureId, Function.identity()));
-    }
-
-    @Override
-    public Optional<Warehouse> getWarehouseBySecureId(String warehouseId) {
-        return warehouseRepository.findBySecureId(warehouseId);
     }
 
 }

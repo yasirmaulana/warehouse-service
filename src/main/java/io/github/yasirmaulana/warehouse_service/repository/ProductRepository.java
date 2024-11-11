@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-
     Optional<Product> findBySecureId(String productId);
     Page<Product> findByNameLikeIgnoreCase(String productName, Pageable pageable);
-    List<Product> findByDeletedFalse();
 }

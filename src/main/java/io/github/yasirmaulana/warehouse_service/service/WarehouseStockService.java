@@ -8,4 +8,6 @@ import java.util.List;
 public interface WarehouseStockService {
     void createStock(List<StockCreateRequestDTO> dtos);
     void updateStock(StockCreateRequestDTO dto);
+    void deleteStock(String stockId);
+
 }
