@@ -7,9 +7,9 @@ Warehouse Service adalah aplikasi backend berbasis Spring Boot yang digunakan un
 Warehouse Service memiliki beberapa fitur utama, di antaranya:
 
 1.  **Manajemen Produk**
-    -   Tambah, lihat, update, dan hapus data produk.
+    -   Tambah, update, hapus dan lihat data produk.
 2.  **Manajemen Gudang**
-    -   Tambah, lihat, update, dan hapus data gudang.
+    -   Tambah, update, hapus dan lihat data gudang.
 3.  **Manajemen Stok Gudang**
     -   Melacak stok produk di setiap gudang, termasuk menambahkan stok baru atau mengubah jumlah stok produk yang ada.
 4.  **Pergerakan Stok**
@@ -19,11 +19,11 @@ Warehouse Service memiliki beberapa fitur utama, di antaranya:
 
 Aplikasi ini menggunakan desain berbasis microservices dengan lima layanan utama, yaitu:
 
-1.  **Product Service** - Mengelola data produk, seperti menambah, mengubah, dan menghapus produk.
+1.  **Product Service** - Mengelola informasi produk.
 2.  **Warehouse Service** - Mengelola informasi gudang.
 3.  **Warehouse Stock Service** - Melacak jumlah stok produk di setiap gudang.
 4.  **Stock Movement Service** - Menyimpan pergerakan stok, termasuk informasi produk yang masuk dan keluar dari gudang tertentu.
-5.  **Inventory Management Service** - Menyediakan integrasi untuk semua layanan lain serta menampilkan laporan stok dan pergerakan barang.
+5.  **[In Progress] Inventory Management Service** - Menyediakan integrasi untuk semua layanan lain serta menampilkan laporan stok dan pergerakan barang.
 
 ## Teknologi yang Digunakan
 
@@ -41,8 +41,9 @@ Aplikasi ini menggunakan desain berbasis microservices dengan lima layanan utama
     
     Copy code
     
-    `git clone https://github.com/username/warehouse-service.git
-    cd warehouse-service` 
+    `git clone https://github.com/username/warehouse-service.git`
+    
+    `cd warehouse-service` 
     
 2.  **Konfigurasi Database**  
     Pastikan Anda sudah mengatur database PostgreSQL, lalu sesuaikan detail koneksi di file `application.properties`.
@@ -53,10 +54,10 @@ Aplikasi ini menggunakan desain berbasis microservices dengan lima layanan utama
     
     Copy code
     
-    `mvn clean install
-    mvn spring-boot:run` 
+    `mvn clean install`
+    `mvn spring-boot:run` 
     
-4.  **Akses Dokumentasi API** Setelah aplikasi berjalan, dokumentasi API dapat diakses di: `http://localhost:8080/swagger-ui.html`
+4.  **Akses Dokumentasi API** Setelah aplikasi berjalan, dokumentasi API dapat diakses di: `http://localhost:9000/swagger-ui/index.html`
     
 
 ## Struktur Database
@@ -83,29 +84,29 @@ Dependencies yang digunakan pada aplikasi ini, seperti yang didefinisikan dalam 
 
 1.  **ProductController**
     
-    -   `POST /v1/products` - Membuat produk baru
-    -   `GET /v1/products` - Mendapatkan semua produk
-    -   `GET /v1/products/{productId}` - Mendapatkan detail produk berdasarkan ID
-    -   `PUT /v1/products/{productId}` - Memperbarui produk berdasarkan ID
-    -   `DELETE /v1/products/{productId}` - Menghapus produk berdasarkan ID
+    -   `POST /v1/product` - Membuat produk baru
+    -   `GET /v1/product` - Mendapatkan semua produk
+    -   `GET /v1/product/{productId}` - Mendapatkan detail produk berdasarkan ID
+    -   `PUT /v1/product/{productId}` - Memperbarui produk berdasarkan ID
+    -   `PATCH /v1/product/{productId}` - Menghapus (soft delete) produk berdasarkan ID
 2.  **WarehouseController**
     
-    -   `POST /v1/warehouses` - Membuat gudang baru
-    -   `GET /v1/warehouses` - Mendapatkan semua gudang
-    -   `GET /v1/warehouses/{warehouseId}` - Mendapatkan detail gudang berdasarkan ID
-    -   `PUT /v1/warehouses/{warehouseId}` - Memperbarui data gudang berdasarkan ID
-    -   `DELETE /v1/warehouses/{warehouseId}` - Menghapus gudang berdasarkan ID
+    -   `POST /v1/warehouse` - Membuat gudang baru
+    -   `GET /v1/warehouse` - Mendapatkan semua gudang
+    -   `GET /v1/warehouse/{warehouseId}` - Mendapatkan detail gudang berdasarkan ID
+    -   `PUT /v1/warehouse/{warehouseId}` - Memperbarui data gudang berdasarkan ID
+    -   `DELETE /v1/warehouse/{warehouseId}` - Menghapus (soft delete) gudang berdasarkan ID
 3.  **WarehouseStockController**
     
-    -   `POST /v1/warehouse-stocks` - Menambahkan stok ke gudang
-    -   `GET /v1/warehouse-stocks/{warehouseId}` - Mendapatkan stok produk di gudang tertentu
-    -   `PUT /v1/warehouse-stocks/{warehouseId}/{productId}` - Memperbarui stok produk di gudang tertentu
-    -   `DELETE /v1/warehouse-stocks/{warehouseId}/{productId}` - Menghapus stok produk di gudang tertentu
+    -   `POST /v1/stock` - Menambahkan stok ke gudang
+    -   `GET /v1/stock/{warehouseId}` - Mendapatkan stok produk di gudang tertentu
+    -   `PUT /v1/stock/{warehouseId}/{productId}` - Memperbarui stok produk di gudang tertentu
+    -   `DELETE /v1/stock/{warehouseId}/{productId}` - Menghapus stok produk di gudang tertentu
 4.  **StockMovementController**
     
-    -   `POST /v1/stock-movements` - Mencatat pergerakan stok baru
-    -   `GET /v1/stock-movements` - Mendapatkan seluruh riwayat pergerakan stok
-    -   `GET /v1/stock-movements/product/{productId}` - Mendapatkan riwayat pergerakan berdasarkan ID produk
+    -   `POST /v1/stock-movement` - Mencatat pergerakan stok baru
+    -   `GET /v1/stock-movement` - Mendapatkan seluruh riwayat pergerakan stok
+    -   `GET /v1/stock-movement/product/{productId}` - Mendapatkan riwayat pergerakan berdasarkan ID produk
     -   `GET /v1/stock-movements/warehouse/{warehouseId}` - Mendapatkan riwayat pergerakan berdasarkan ID gudang
 
 ## Lisensi
