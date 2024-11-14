@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface WarehouseStockRepository extends JpaRepository<WarehouseStock, Long> {
 
     Optional<WarehouseStock> findByWarehouseIdAndProductId(Long warehouseId, Long productId);
+    Page<WarehouseStock> findByDeletedFalse(Pageable pageable);
     Page<WarehouseStock> findByQuantityLessThan(Integer quantity, Pageable pageable);
     Page<WarehouseStock> findByQuantityLessThanEqual(Integer quantity, Pageable pageable);
     Page<WarehouseStock> findByQuantityGreaterThan(Integer quantity, Pageable pageable);

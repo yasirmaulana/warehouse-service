@@ -8,14 +8,13 @@ import io.github.yasirmaulana.warehouse_service.dto.WarehouseUpdateRequestDTO;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public interface WarehouseService {
     void createWarehouse(List<WarehouseCreateRequestDTO> dtos);
     void updateWarehouse(String warehouseId, WarehouseUpdateRequestDTO dto);
     void deleteWarehouse(String warehouseId);
-    ResultPageResponseDTO<WarehouseResponseDTO> getWarehouseList(Integer pages, Integer limit, String sortBy,
-                                                                 String direction, String warehouseName);
+    ResultPageResponseDTO<WarehouseResponseDTO> getWarehouseList(Integer pages, Integer limit,
+                                                                 String sortBy, String direction, String warehouseName);
     Map<String, Warehouse> getAllWarehousesAsMap();
 
 }

@@ -28,4 +28,5 @@ public class WarehouseStockResource {
         warehouseStockService.updateStock(dto);
         return ResponseEntity.ok().build();
     }
+
 }

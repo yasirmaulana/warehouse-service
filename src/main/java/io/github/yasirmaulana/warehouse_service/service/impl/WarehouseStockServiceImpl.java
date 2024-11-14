@@ -3,13 +3,21 @@ package io.github.yasirmaulana.warehouse_service.service.impl;
 import io.github.yasirmaulana.warehouse_service.domain.Product;
 import io.github.yasirmaulana.warehouse_service.domain.Warehouse;
 import io.github.yasirmaulana.warehouse_service.domain.WarehouseStock;
+import io.github.yasirmaulana.warehouse_service.dto.ResultPageResponseDTO;
 import io.github.yasirmaulana.warehouse_service.dto.StockCreateRequestDTO;
+import io.github.yasirmaulana.warehouse_service.dto.WarehouseStockResponseDTO;
 import io.github.yasirmaulana.warehouse_service.extention.NotFoundException;
 import io.github.yasirmaulana.warehouse_service.repository.WarehouseStockRepository;
 import io.github.yasirmaulana.warehouse_service.service.ProductService;
 import io.github.yasirmaulana.warehouse_service.service.WarehouseService;
 import io.github.yasirmaulana.warehouse_service.service.WarehouseStockService;
+import io.github.yasirmaulana.warehouse_service.util.PaginationUtil;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,9 +63,28 @@ public class WarehouseStockServiceImpl implements WarehouseStockService {
         warehouseStockRepository.save(stock);
     }
 
+
+    // comparisonOperator:
+    // > G | >= GT | < L | <= LT |
     @Override
-    public void deleteStock(String stockId) {
+    public ResultPageResponseDTO<WarehouseStockResponseDTO> getStockList(Integer pages, Integer limit, String sortBy, String direction,
+                                                                         String comparisonOperator, Integer quantity) {
+        Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
+        Pageable pageable = PageRequest.of(pages,limit,sort);
+        comparisonOperator = StringUtils.isBlank(comparisonOperator)? "%" : comparisonOperator.toUpperCase();
+        Page<WarehouseStock> pageResult = getPageResult(comparisonOperator, quantity, pageable);
+
+        return null;
     }
 
+    private Page<WarehouseStock> getPageResult(String comparisonOperator, Integer quantity, Pageable pageable) {
+        switch (comparisonOperator) {
+            case "G": return warehouseStockRepository.findByQuantityGreaterThan(quantity, pageable);
+            case "GE": return warehouseStockRepository.findByQuantityGreaterThanEqual(quantity, pageable);
+            case "L": return warehouseStockRepository.findByQuantityLessThan(quantity, pageable);
+            case "LE": return warehouseStockRepository.findByQuantityLessThanEqual(quantity, pageable);
+            default: return warehouseStockRepository.findByDeletedFalse(pageable);
+        }
+    }
 
 }
