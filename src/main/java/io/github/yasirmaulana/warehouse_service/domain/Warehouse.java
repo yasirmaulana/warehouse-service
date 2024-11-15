@@ -20,7 +20,7 @@ public class Warehouse extends AbstractBaseEntity {
     private String location;
 
     @Column(nullable = false)
-    private Integer capacity;
+    private Integer capacity; // volume meter kubik
 
     @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WarehouseStock> stocks;

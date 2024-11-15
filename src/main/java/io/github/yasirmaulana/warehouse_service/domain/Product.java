@@ -2,7 +2,6 @@ package io.github.yasirmaulana.warehouse_service.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -25,6 +24,8 @@ public class Product extends AbstractBaseEntity {
     private String description;
 
     private String category;
+
+    private Integer capacity;  // volume meter kubik
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WarehouseStock> stocks;

@@ -15,10 +15,12 @@ public class StockMovement {
     private Long id;
 
     @Column(name = "movement_type", nullable = false)
-    private String movementType; // Inbound or Outbound
+    private String movementType; // Inbound, Outbound, Picking, Transfer, Shipping
 
     @Column(nullable = false)
     private Integer quantity;
+
+    private Integer capacity; // volume meter kubik
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_id", nullable = false)
@@ -27,6 +29,10 @@ public class StockMovement {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    private String source;
+
+    private String destination;
 
     @Column(name = "deleted", columnDefinition = "boolean default false")
     private boolean deleted;
@@ -46,4 +52,26 @@ public class StockMovement {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    /*
+    INBOUND
+    Source: Lokasi pemasok atau pengirim.
+    Destination: Lokasi penyimpanan di gudang.
+
+    OUTBOUND
+    Source: Lokasi penyimpanan di gudang.
+    Destination: Lokasi pelanggan atau tujuan pengiriman.
+
+    PICKING
+    Source: Lokasi penyimpanan di gudang.
+    Destination: Area pengemasan atau area pengiriman.
+
+    TRANSFER
+    Source: Lokasi asal.
+    Destination: Lokasi tujuan.
+
+    SHIPPING
+    Source: Area pengemasan atau gudang.
+    Destination: Lokasi tujuan akhir (pelanggan, distributor).
+     */
 }
