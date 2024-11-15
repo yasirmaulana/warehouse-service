@@ -1,5 +1,6 @@
 package io.github.yasirmaulana.warehouse_service.domain;
 
+import io.github.yasirmaulana.warehouse_service.dto.ProductCreateUpdateRequestDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,9 +26,28 @@ public class Product extends AbstractBaseEntity {
 
     private String category;
 
+    @Column(nullable = false)
     private Integer capacity;  // volume meter kubik
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WarehouseStock> stocks;
+
+    public static Product fromDTO(ProductCreateUpdateRequestDTO dto) {
+        Product product = new Product();
+        product.setName(dto.getName());
+        product.setSku(dto.getSku());
+        product.setDescription(dto.getDescription());
+        product.setCategory(dto.getCategory());
+        product.setCapacity(dto.getCapacity());
+        return product;
+    }
+
+    public void updateFromDTO(ProductCreateUpdateRequestDTO dto) {
+        setName(dto.getName());
+        setSku(dto.getSku());
+        setDescription(dto.getDescription());
+        setCategory(dto.getCategory());
+        setCapacity(dto.getCapacity());
+    }
 
 }

@@ -1,9 +1,8 @@
 package io.github.yasirmaulana.warehouse_service.service.impl;
 
 import io.github.yasirmaulana.warehouse_service.domain.Product;
-import io.github.yasirmaulana.warehouse_service.dto.ProductCreateRequestDTO;
+import io.github.yasirmaulana.warehouse_service.dto.ProductCreateUpdateRequestDTO;
 import io.github.yasirmaulana.warehouse_service.dto.ProductResponseDTO;
-import io.github.yasirmaulana.warehouse_service.dto.ProductUpdateRequestDTO;
 import io.github.yasirmaulana.warehouse_service.dto.ResultPageResponseDTO;
 import io.github.yasirmaulana.warehouse_service.extention.NotFoundException;
 import io.github.yasirmaulana.warehouse_service.repository.ProductRepository;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,41 +27,37 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductRepository productRepository;
 
+    private static final String INVALID_PRODUCT_ID = "invalid.product.id";
+
     @Override
-    public void createProduct(List<ProductCreateRequestDTO> dtos) {
-        List<Product> products = dtos.stream().map(p -> {
-            Product product = new Product();
-            product.setName(p.getName());
-            product.setSku(p.getSku());
-            product.setDescription(p.getDescription());
-            product.setCategory(p.getCategory());
-
-            return product;
-        }).toList();
-
+    public void createProduct(List<ProductCreateUpdateRequestDTO> dtos) {
+        List<Product> products = dtos.stream()
+                .map(Product::fromDTO)
+                .toList();
         productRepository.saveAll(products);
-
     }
 
     @Override
-    public void updateProduct(String productId, ProductUpdateRequestDTO dto) {
-        Product product = productRepository.findBySecureId(productId)
-                .orElseThrow(() -> new NotFoundException("invalid.product.id"));
-        product.setName(dto.getName()==null|| dto.getName().isBlank()?product.getName(): dto.getName());
-        product.setSku(dto.getSku()==null|| dto.getSku().isBlank()?product.getSku(): dto.getSku());
-        product.setDescription(dto.getDescription());
-        product.setCategory(dto.getCategory());
-
-        productRepository.save(product);
+    public void updateProduct(String productId, ProductCreateUpdateRequestDTO dto) {
+        Product existingProduct = productRepository.findBySecureId(productId)
+                .orElseThrow(() -> new NotFoundException(INVALID_PRODUCT_ID));
+        existingProduct.updateFromDTO(dto);
+        productRepository.save(existingProduct);
     }
 
     @Override
     public void deleteProduct(String productId) {
-        Product product = productRepository.findBySecureId(productId)
-                .orElseThrow(() -> new NotFoundException("invalid.product.id"));
-        product.setDeleted(true);
+        Product existingProduct = productRepository.findBySecureId(productId)
+                .orElseThrow(() -> new NotFoundException(INVALID_PRODUCT_ID));
+        existingProduct.setDeleted(true);
+        productRepository.save(existingProduct);
+    }
 
-        productRepository.save(product);
+    @Override
+    public ProductResponseDTO getProductById(String productId) {
+        Product existingProduct = productRepository.findBySecureId(productId)
+                .orElseThrow(() -> new NotFoundException(INVALID_PRODUCT_ID));
+        return new ProductResponseDTO(existingProduct);
     }
 
     @Override
@@ -72,16 +66,9 @@ public class ProductServiceImpl implements ProductService {
         Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
         Pageable pageable = PageRequest.of(pages, limit, sort);
         Page<Product> pageResult = productRepository.findByNameLikeIgnoreCase(productName, pageable);
-        List<ProductResponseDTO> dtos = pageResult.stream().map(p -> {
-            ProductResponseDTO dto = new ProductResponseDTO();
-            dto.setProductId(p.getSecureId());
-            dto.setName(p.getName());
-            dto.setSku(p.getSku());
-            dto.setDescription(p.getDescription());
-            dto.setCategory(p.getCategory());
-
-            return dto;
-        }).toList();
+        List<ProductResponseDTO> dtos = pageResult.stream()
+                .map(ProductResponseDTO::fromProduct)
+                .toList();
         return PaginationUtil.createResultPageDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
     }
 

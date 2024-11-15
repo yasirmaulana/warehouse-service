@@ -1,8 +1,7 @@
 package io.github.yasirmaulana.warehouse_service.web;
 
-import io.github.yasirmaulana.warehouse_service.dto.ProductCreateRequestDTO;
+import io.github.yasirmaulana.warehouse_service.dto.ProductCreateUpdateRequestDTO;
 import io.github.yasirmaulana.warehouse_service.dto.ProductResponseDTO;
-import io.github.yasirmaulana.warehouse_service.dto.ProductUpdateRequestDTO;
 import io.github.yasirmaulana.warehouse_service.dto.ResultPageResponseDTO;
 import io.github.yasirmaulana.warehouse_service.service.ProductService;
 import jakarta.validation.Valid;
@@ -21,14 +20,14 @@ public class ProductResouce {
     private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<Void> createNewProduct(@RequestBody @Valid List<ProductCreateRequestDTO> dtos) {
+    public ResponseEntity<Void> createNewProduct(@RequestBody @Valid List<ProductCreateUpdateRequestDTO> dtos) {
         productService.createProduct(dtos);
         return ResponseEntity.created(URI.create("/v1/product")).build();
     }
 
     @PutMapping("/{productId}")
     public ResponseEntity<Void> updateProduct(@PathVariable String productId,
-                                              @RequestBody @Valid ProductUpdateRequestDTO dto) {
+                                              @RequestBody @Valid ProductCreateUpdateRequestDTO dto) {
         productService.updateProduct(productId, dto);
         return ResponseEntity.ok().build();
     }
