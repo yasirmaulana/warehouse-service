@@ -2,11 +2,13 @@ package io.github.yasirmaulana.warehouse_service.domain;
 
 import io.github.yasirmaulana.warehouse_service.dto.ProductCreateUpdateRequestDTO;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@Builder
 @Entity
 @Table(name = "products")
 public class Product extends AbstractBaseEntity {
@@ -33,13 +35,13 @@ public class Product extends AbstractBaseEntity {
     private List<WarehouseStock> stocks;
 
     public static Product fromDTO(ProductCreateUpdateRequestDTO dto) {
-        Product product = new Product();
-        product.setName(dto.getName());
-        product.setSku(dto.getSku());
-        product.setDescription(dto.getDescription());
-        product.setCategory(dto.getCategory());
-        product.setCapacity(dto.getCapacity());
-        return product;
+        return Product.builder()
+                .name(dto.getName())
+                .sku(dto.getSku())
+                .description(dto.getDescription())
+                .category(dto.getCategory())
+                .capacity(dto.getCapacity())
+                .build();
     }
 
     public void updateFromDTO(ProductCreateUpdateRequestDTO dto) {

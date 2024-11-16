@@ -2,9 +2,8 @@ package io.github.yasirmaulana.warehouse_service.service.impl;
 
 import io.github.yasirmaulana.warehouse_service.domain.Warehouse;
 import io.github.yasirmaulana.warehouse_service.dto.ResultPageResponseDTO;
-import io.github.yasirmaulana.warehouse_service.dto.WarehouseCreateRequestDTO;
+import io.github.yasirmaulana.warehouse_service.dto.WarehouseCreateUpdateRequestDTO;
 import io.github.yasirmaulana.warehouse_service.dto.WarehouseResponseDTO;
-import io.github.yasirmaulana.warehouse_service.dto.WarehouseUpdateRequestDTO;
 import io.github.yasirmaulana.warehouse_service.extention.NotFoundException;
 import io.github.yasirmaulana.warehouse_service.repository.WarehouseRepository;
 import io.github.yasirmaulana.warehouse_service.service.WarehouseService;
@@ -28,39 +27,37 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     private WarehouseRepository warehouseRepository;
 
+    private static final String INVALID_WAREHOUSE_ID = "invalid.warehouse.id";
+
     @Override
-    public void createWarehouse(List<WarehouseCreateRequestDTO> dtos) {
-        List<Warehouse> warehouses = dtos.stream().map(p -> {
-            Warehouse warehouse = new Warehouse();
-            warehouse.setName(p.getName());
-            warehouse.setLocation(p.getLocation());
-            warehouse.setCapacity(p.getCapacity());
-
-            return warehouse;
-        }).toList();
-
+    public void createWarehouse(List<WarehouseCreateUpdateRequestDTO> dtos) {
+        List<Warehouse> warehouses = dtos.stream()
+                .map(Warehouse::fromDTO)
+                .toList();
         warehouseRepository.saveAll(warehouses);
     }
 
     @Override
-    public void updateWarehouse(String warehouseId, WarehouseUpdateRequestDTO dto) {
-        Warehouse warehouse = warehouseRepository.findBySecureId(warehouseId)
-                .orElseThrow(() -> new NotFoundException("invalid.warehouse.id"));
-
-        warehouse.setName(dto.getName()==null|| dto.getName().isBlank()?warehouse.getName(): dto.getName());
-        warehouse.setLocation(dto.getLocation()==null|| dto.getLocation().isBlank()?warehouse.getLocation(): dto.getLocation());
-        warehouse.setCapacity(dto.getCapacity()==null ?warehouse.getCapacity(): dto.getCapacity());
-
-        warehouseRepository.save(warehouse);
+    public void updateWarehouse(String warehouseId, WarehouseCreateUpdateRequestDTO dto) {
+        Warehouse existingWarehouse = warehouseRepository.findBySecureId(warehouseId)
+                .orElseThrow(() -> new NotFoundException(INVALID_WAREHOUSE_ID));
+        existingWarehouse.updateFromDTO(dto);
+        warehouseRepository.save(existingWarehouse);
     }
 
     @Override
     public void deleteWarehouse(String warehouseId) {
-        Warehouse warehouse = warehouseRepository.findBySecureId(warehouseId)
-                .orElseThrow(() -> new NotFoundException("invalid.warehouse.id"));
-        warehouse.setDeleted(true);
+        Warehouse existingWarehouse = warehouseRepository.findBySecureId(warehouseId)
+                .orElseThrow(() -> new NotFoundException(INVALID_WAREHOUSE_ID));
+        existingWarehouse.setDeleted(true);
+        warehouseRepository.save(existingWarehouse);
+    }
 
-        warehouseRepository.save(warehouse);
+    @Override
+    public WarehouseResponseDTO getWarehouseById(String warehouseId) {
+        Warehouse existingWarehouse = warehouseRepository.findBySecureId(warehouseId)
+                .orElseThrow(() -> new NotFoundException(INVALID_WAREHOUSE_ID));
+        return WarehouseResponseDTO.fromWarehouse(existingWarehouse);
     }
 
     @Override
@@ -70,15 +67,9 @@ public class WarehouseServiceImpl implements WarehouseService {
         Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
         Pageable pageable = PageRequest.of(pages, limit, sort);
         Page<Warehouse> pageResult = warehouseRepository.findByNameLikeIgnoreCase(warehouseName, pageable);
-        List<WarehouseResponseDTO> dtos = pageResult.stream().map(p -> {
-            WarehouseResponseDTO dto = new WarehouseResponseDTO();
-            dto.setWarehouseId(p.getSecureId());
-            dto.setName(p.getName());
-            dto.setLocation(p.getLocation());
-            dto.setCapacity(p.getCapacity());
-
-            return dto;
-        }).toList();
+        List<WarehouseResponseDTO> dtos = pageResult.stream()
+                .map(WarehouseResponseDTO::fromWarehouse)
+                .toList();
         return PaginationUtil.createResultPageDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
     }
 

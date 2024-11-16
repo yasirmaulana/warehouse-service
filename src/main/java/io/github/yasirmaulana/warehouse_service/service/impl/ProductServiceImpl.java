@@ -57,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDTO getProductById(String productId) {
         Product existingProduct = productRepository.findBySecureId(productId)
                 .orElseThrow(() -> new NotFoundException(INVALID_PRODUCT_ID));
-        return new ProductResponseDTO(existingProduct);
+        return ProductResponseDTO.fromProduct(existingProduct);
     }
 
     @Override

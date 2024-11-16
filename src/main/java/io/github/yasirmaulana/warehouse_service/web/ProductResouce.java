@@ -38,6 +38,11 @@ public class ProductResouce {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductResponseDTO> findProduct(@PathVariable String productId) {
+        return ResponseEntity.ok().body(productService.getProductById(productId));
+    }
+
     @GetMapping
     public ResponseEntity<ResultPageResponseDTO<ProductResponseDTO>> findProductList(
             @RequestParam(name = "page", required = true, defaultValue = "0") Integer pages,

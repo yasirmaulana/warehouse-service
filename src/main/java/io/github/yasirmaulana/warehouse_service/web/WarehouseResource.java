@@ -1,9 +1,8 @@
 package io.github.yasirmaulana.warehouse_service.web;
 
 import io.github.yasirmaulana.warehouse_service.dto.ResultPageResponseDTO;
-import io.github.yasirmaulana.warehouse_service.dto.WarehouseCreateRequestDTO;
+import io.github.yasirmaulana.warehouse_service.dto.WarehouseCreateUpdateRequestDTO;
 import io.github.yasirmaulana.warehouse_service.dto.WarehouseResponseDTO;
-import io.github.yasirmaulana.warehouse_service.dto.WarehouseUpdateRequestDTO;
 import io.github.yasirmaulana.warehouse_service.service.WarehouseService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,13 +20,13 @@ public class WarehouseResource {
     private final WarehouseService warehouseService;
 
     @PostMapping
-    public ResponseEntity<Void> createWarehouse(@RequestBody @Valid List<WarehouseCreateRequestDTO> dtos) {
+    public ResponseEntity<Void> createWarehouse(@RequestBody @Valid List<WarehouseCreateUpdateRequestDTO> dtos) {
         warehouseService.createWarehouse(dtos);
         return ResponseEntity.created(URI.create("/v1/warehouse")).build();
     }
 
     @PutMapping("/{warehouseId}")
-    public ResponseEntity<Void> updateWarehouse(@PathVariable String warehouseId, @RequestBody @Valid WarehouseUpdateRequestDTO dto) {
+    public ResponseEntity<Void> updateWarehouse(@PathVariable String warehouseId, @RequestBody @Valid WarehouseCreateUpdateRequestDTO dto) {
         warehouseService.updateWarehouse(warehouseId, dto);
         return ResponseEntity.ok().build();
     }
@@ -36,6 +35,11 @@ public class WarehouseResource {
     public ResponseEntity<Void> deleteWarehouse(@PathVariable String warehouseId) {
         warehouseService.deleteWarehouse(warehouseId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{warehouseId}")
+    public ResponseEntity<WarehouseResponseDTO> findWarehouse(@PathVariable String warehouseId) {
+        return ResponseEntity.ok().body(warehouseService.getWarehouseById(warehouseId));
     }
 
     @GetMapping
