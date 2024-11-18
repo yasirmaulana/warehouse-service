@@ -2,13 +2,17 @@ package io.github.yasirmaulana.warehouse_service.domain;
 
 import io.github.yasirmaulana.warehouse_service.dto.WarehouseCreateUpdateRequestDTO;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "warehouses")
 public class Warehouse extends AbstractBaseEntity {
@@ -27,6 +31,7 @@ public class Warehouse extends AbstractBaseEntity {
 
     @OneToMany(mappedBy = "warehouse", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WarehouseStock> stocks;
+
 
     public static Warehouse fromDTO(WarehouseCreateUpdateRequestDTO dto) {
         return Warehouse.builder()

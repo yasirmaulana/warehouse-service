@@ -1,16 +1,16 @@
 package io.github.yasirmaulana.warehouse_service.service;
 
 import io.github.yasirmaulana.warehouse_service.dto.ResultPageResponseDTO;
-import io.github.yasirmaulana.warehouse_service.dto.StockCreateRequestDTO;
-import io.github.yasirmaulana.warehouse_service.dto.WarehouseStockResponseDTO;
+import io.github.yasirmaulana.warehouse_service.dto.StockCreateUpdateRequestDTO;
+import io.github.yasirmaulana.warehouse_service.dto.StockResponseDTO;
 
 import java.util.List;
 
 
 public interface WarehouseStockService {
-    void createStock(List<StockCreateRequestDTO> dtos);
-    void updateStock(StockCreateRequestDTO dto);
-    ResultPageResponseDTO<WarehouseStockResponseDTO> getStockList(Integer pages, Integer limit, String sortBy,
-                                                                  String direction, String comparisonOperator,
-                                                                  Integer quantity);
+    void createStock(List<StockCreateUpdateRequestDTO> dtos);
+    void updateStock(StockCreateUpdateRequestDTO dto);
+    ResultPageResponseDTO<StockResponseDTO> getStockList(Integer pages, Integer limit, String sortBy,
+                                                         String direction, String comparisonOperator,
+                                                         Integer quantity);
 }

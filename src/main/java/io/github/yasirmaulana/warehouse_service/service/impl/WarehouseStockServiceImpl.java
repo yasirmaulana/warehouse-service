@@ -4,8 +4,8 @@ import io.github.yasirmaulana.warehouse_service.domain.Product;
 import io.github.yasirmaulana.warehouse_service.domain.Warehouse;
 import io.github.yasirmaulana.warehouse_service.domain.WarehouseStock;
 import io.github.yasirmaulana.warehouse_service.dto.ResultPageResponseDTO;
-import io.github.yasirmaulana.warehouse_service.dto.StockCreateRequestDTO;
-import io.github.yasirmaulana.warehouse_service.dto.WarehouseStockResponseDTO;
+import io.github.yasirmaulana.warehouse_service.dto.StockCreateUpdateRequestDTO;
+import io.github.yasirmaulana.warehouse_service.dto.StockResponseDTO;
 import io.github.yasirmaulana.warehouse_service.extention.NotFoundException;
 import io.github.yasirmaulana.warehouse_service.repository.WarehouseStockRepository;
 import io.github.yasirmaulana.warehouse_service.service.ProductService;
@@ -32,7 +32,7 @@ public class WarehouseStockServiceImpl implements WarehouseStockService {
     private final WarehouseStockRepository warehouseStockRepository;
 
     @Override
-    public void createStock(List<StockCreateRequestDTO> dtos) {
+    public void createStock(List<StockCreateUpdateRequestDTO> dtos) {
         Map<String, Product> productsById = productService.getAllProductsAsMap();
         Map<String, Warehouse> warehousesById = warehouseService.getAllWarehousesAsMap();
 
@@ -53,7 +53,7 @@ public class WarehouseStockServiceImpl implements WarehouseStockService {
     }
 
     @Override
-    public void updateStock(StockCreateRequestDTO dto) {
+    public void updateStock(StockCreateUpdateRequestDTO dto) {
         WarehouseStock warehouseStock = warehouseStockRepository.findByWarehouseIdAndProductId(dto.getWarehouse().getId() , dto.getProduct().getId())
                 .orElseThrow(() -> new NotFoundException("invalid.warehouse.id.or.product.id"));
 
@@ -67,14 +67,16 @@ public class WarehouseStockServiceImpl implements WarehouseStockService {
     // comparisonOperator:
     // > G | >= GT | < L | <= LT |
     @Override
-    public ResultPageResponseDTO<WarehouseStockResponseDTO> getStockList(Integer pages, Integer limit, String sortBy, String direction,
-                                                                         String comparisonOperator, Integer quantity) {
+    public ResultPageResponseDTO<StockResponseDTO> getStockList(Integer pages, Integer limit, String sortBy, String direction,
+                                                                String comparisonOperator, Integer quantity) {
         Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
         Pageable pageable = PageRequest.of(pages,limit,sort);
         comparisonOperator = StringUtils.isBlank(comparisonOperator)? "%" : comparisonOperator.toUpperCase();
         Page<WarehouseStock> pageResult = getPageResult(comparisonOperator, quantity, pageable);
-
-        return null;
+        List<StockResponseDTO> dtos = pageResult.stream()
+                .map(StockResponseDTO::fromStock)
+                .toList();
+        return PaginationUtil.createResultPageDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
     }
 
     private Page<WarehouseStock> getPageResult(String comparisonOperator, Integer quantity, Pageable pageable) {
