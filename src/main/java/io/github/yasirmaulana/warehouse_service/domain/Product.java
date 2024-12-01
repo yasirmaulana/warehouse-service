@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -37,16 +36,6 @@ public class Product extends AbstractBaseEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WarehouseStock> stocks;
-
-    public static Product fromDTO(ProductCreateUpdateRequestDTO dto) {
-        return Product.builder()
-                .name(dto.getName())
-                .sku(dto.getSku())
-                .description(dto.getDescription())
-                .category(dto.getCategory())
-                .capacity(dto.getCapacity())
-                .build();
-    }
 
     public void updateFromDTO(ProductCreateUpdateRequestDTO dto) {
         setName(dto.getName());

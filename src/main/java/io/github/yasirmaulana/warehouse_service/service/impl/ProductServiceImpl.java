@@ -5,11 +5,13 @@ import io.github.yasirmaulana.warehouse_service.dto.ProductCreateUpdateRequestDT
 import io.github.yasirmaulana.warehouse_service.dto.ProductResponseDTO;
 import io.github.yasirmaulana.warehouse_service.dto.ResultPageResponseDTO;
 import io.github.yasirmaulana.warehouse_service.extention.NotFoundException;
+import io.github.yasirmaulana.warehouse_service.mapper.ProductMapper;
 import io.github.yasirmaulana.warehouse_service.repository.ProductRepository;
 import io.github.yasirmaulana.warehouse_service.service.ProductService;
 import io.github.yasirmaulana.warehouse_service.util.PaginationUtil;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,16 +27,20 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
     private static final String INVALID_PRODUCT_ID = "invalid.product.id";
 
     @Override
     public void createProduct(List<ProductCreateUpdateRequestDTO> dtos) {
+        validateInput(dtos);
+
         List<Product> products = dtos.stream()
-                .map(Product::fromDTO)
+                .map(productMapper::toEntity)
                 .toList();
-        productRepository.saveAll(products);
+
+        saveProducts(products);
     }
 
     @Override
@@ -79,4 +85,17 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toMap(Product::getSecureId, Function.identity()));
     }
 
+    private void validateInput(List<ProductCreateUpdateRequestDTO> dtos) {
+        if (dtos == null || dtos.isEmpty()) {
+            throw new IllegalArgumentException("Product list cannot be null or empty");
+        }
+    }
+
+    private void saveProducts(List<Product> products) {
+        try {
+            productRepository.saveAll(products);
+        } catch (DataAccessException ex) {
+            throw new RuntimeException("Database error while saving product", ex);
+        }
+    }
 }
