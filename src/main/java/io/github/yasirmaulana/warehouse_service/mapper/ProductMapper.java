@@ -10,12 +10,25 @@ public class ProductMapper {
         if (dto == null) {
             return null;
         }
-        Product product = new Product();
-        product.setName(dto.getName());
-        product.setSku(dto.getSku());
-        product.setDescription(dto.getDescription());
-        product.setCategory(dto.getCategory());
-        product.setCapacity(dto.getCapacity());
-        return product;
+        return Product.builder()
+                .name(dto.getName())
+                .sku(dto.getSku())
+                .description(dto.getDescription())
+                .category(dto.getCategory())
+                .capacity(dto.getCapacity())
+                .build();
+
     }
+
+    public void updateEntity(Product existingProduct, ProductCreateUpdateRequestDTO dto) {
+        if (dto == null || existingProduct == null) {
+            return;
+        }
+        existingProduct.setName(dto.getName());
+        existingProduct.setSku(dto.getSku());
+        existingProduct.setDescription(dto.getDescription());
+        existingProduct.setCategory(dto.getCategory());
+        existingProduct.setCapacity(dto.getCapacity());
+    }
+
 }

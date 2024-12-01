@@ -9,7 +9,6 @@ import io.github.yasirmaulana.warehouse_service.mapper.ProductMapper;
 import io.github.yasirmaulana.warehouse_service.repository.ProductRepository;
 import io.github.yasirmaulana.warehouse_service.service.ProductService;
 import io.github.yasirmaulana.warehouse_service.util.PaginationUtil;
-import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -17,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -24,34 +24,36 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
-    private static final String INVALID_PRODUCT_ID = "invalid.product.id";
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
+        this.productRepository = productRepository;
+        this.productMapper = productMapper;
+    }
 
-    @Override
+    private static final String INVALID_PRODUCT_ID = "Invalid Product ID or Product not found";
+
+    @Transactional
     public void createProduct(List<ProductCreateUpdateRequestDTO> dtos) {
         validateInput(dtos);
-
         List<Product> products = dtos.stream()
                 .map(productMapper::toEntity)
                 .toList();
-
         saveProducts(products);
     }
 
-    @Override
+    @Transactional
     public void updateProduct(String productId, ProductCreateUpdateRequestDTO dto) {
         Product existingProduct = productRepository.findBySecureId(productId)
                 .orElseThrow(() -> new NotFoundException(INVALID_PRODUCT_ID));
-        existingProduct.updateFromDTO(dto);
+        productMapper.updateEntity(existingProduct, dto);
         productRepository.save(existingProduct);
     }
 
-    @Override
+    @Transactional
     public void deleteProduct(String productId) {
         Product existingProduct = productRepository.findBySecureId(productId)
                 .orElseThrow(() -> new NotFoundException(INVALID_PRODUCT_ID));

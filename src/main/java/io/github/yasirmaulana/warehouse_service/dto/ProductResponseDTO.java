@@ -11,7 +11,6 @@ import java.io.Serializable;
 
 @Data
 @Builder
-@JsonNaming(PropertyNamingStrategy.class)
 public class ProductResponseDTO implements Serializable {
 
     @Serial

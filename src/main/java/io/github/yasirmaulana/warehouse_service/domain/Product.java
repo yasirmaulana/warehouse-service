@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "products")
 public class Product extends AbstractBaseEntity {
@@ -36,13 +37,4 @@ public class Product extends AbstractBaseEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WarehouseStock> stocks;
-
-    public void updateFromDTO(ProductCreateUpdateRequestDTO dto) {
-        setName(dto.getName());
-        setSku(dto.getSku());
-        setDescription(dto.getDescription());
-        setCategory(dto.getCategory());
-        setCapacity(dto.getCapacity());
-    }
-
 }
